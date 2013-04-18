@@ -1,6 +1,8 @@
 collection-view
 ===============
 
+![Collection View home screen](https://github.com/mikedecaro/collection-view/raw/master/img/screenshot.png)
+
 An Rdio inspired collection view for Spotify.
 
 
