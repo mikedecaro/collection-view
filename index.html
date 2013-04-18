@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+    <head>
+        <!-- Spotify CSS files -->
+        <link rel="stylesheet" type="text/css" href="sp://resources/css/eve.css">
+        <link rel="stylesheet" type="text/css" href="sp://resources/css/api.css">
+        <link rel="stylesheet" type="text/css" href="sp://resources/css/player.css">
+        <link rel="stylesheet" type="text/css" href="sp://resources/css/list.css">
+
+        <!-- Project CSS files -->
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/test.js"></script>
+        <script type="text/javascript">
+        	
+            var selectedArtist = null;
+            var currentFilter = "";
+            var sortOrder = "recent";
+            
+            // Fires when the DOM is ready                    
+            $(document).ready(function () {
+                
+                // Add the handler for the filter
+                $('#filterTextBox').keyup(function(evt) {
+                    var filterTextBox = document.getElementById('filterTextBox');
+                    currentFilter = filterTextBox.value;
+                    showAlbums();
+                });
+                
+                // Add the handler for the sort order
+                $('#sortDropDown').change(function(evt) {
+                    var sortDropDown = document.getElementById('sortDropDown');
+                    if (sortOrder != sortDropDown.value) {
+                        sortOrder = sortDropDown.value;
+                        showAlbums();
+                    }
+                });
+                
+                // Set up the toggle button
+                $('.no-checkedselector').on('change', 'input[type="radio"].toggle', function () {
+                    if (this.checked) {
+                        $('input[name="' + this.name + '"].checked').removeClass('checked');
+                        $(this).addClass('checked');
+                        $('.toggle-container').addClass('force-update').removeClass('force-update');
+                        
+                        var albumList = document.getElementById('albumList');
+                        if (this.id == 'toggle-list') {
+                            albumList.className = 'albumList';
+                        } else {
+                            albumList.className = 'albumGrid';
+                        }
+                    }
+                });
+                $('.no-checkedselector input[type="radio"].toggle:checked').addClass('checked');
+                
+            });
+            
+            // Fires when everything is done loading
+            $(document).ready(function () {
+                showArtists();
+	        	showAlbums();
+            });
+            
+            function selectArtist(artistName)
+            {
+                selectedArtist = artistName;
+                showAlbums();
+            }
+            
+        	function showArtists()
+        	{
+        		var artistList = new Array();
+        		
+        		var sp = getSpotifyApi();
+				var models = sp.require('$api/models');
+		    	var albumList = models.library.albums;
+        		
+        		// Populate the list
+			    for(var x=0; x < albumList.length; x++) {
+			    	if ($.inArray(albumList[x].artist.name, artistList) == -1) {
+				    	artistList.push(albumList[x].artist.name);
+			    	}
+			    }
+	        	
+	        	// Show the list of artists
+	        	var artistListDiv = document.getElementById('artistList');
+        		artistListDiv.innerHTML = "<ul>";
+        		artistListDiv.innerHTML += "<li><a href=\"javascript:selectArtist()\">All Artists</a></li>";
+        		
+        		artistList.sort(
+				  function(a, b) {
+				    if (a.toLowerCase() < b.toLowerCase()) return -1;
+				    if (a.toLowerCase() > b.toLowerCase()) return 1;
+				    return 0;
+				  }
+				);
+
+        		for(var x=0; x < artistList.length; x++) {
+        			artistListDiv.innerHTML += "<li><a href=\"javascript:selectArtist('" + artistList[x] + "')\">" + artistList[x] + "</a></li>";
+        		}
+        		
+        		artistListDiv.innerHTML += "</ul>";
+        	}
+        	
+        	function showAlbums()
+        	{
+        		var sp = getSpotifyApi();
+				var models = sp.require('$api/models');
+		    	var albumList = models.library.albums;
+		    	
+                // Sort the list of albums
+                if (sortOrder == "recent") {
+                    albumList.reverse();
+                } else {
+                    albumList.sort(
+                      function(a, b) {
+                      
+                        if (sortOrder == "artist") {
+                            if (a.artist.name.toLowerCase() < b.artist.name.toLowerCase()) return -1;
+                            if (a.artist.name.toLowerCase() > b.artist.name.toLowerCase()) return 1;
+                            return 0;
+                        } else if (sortOrder == "album") {
+                            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                            return 0;
+                        } else {
+                            // Recent (should never get here)
+                            return 0;
+                        }
+                      
+                      }
+                    );
+                }
+                
+                // Populate the data
+		    	var albumListDiv = document.getElementById('albumList');
+        		albumListDiv.innerHTML = "<ul>";
+        		
+			    for(var x=0; x < albumList.length; x++) {
+			    	if (!selectedArtist || selectedArtist == albumList[x].artist.name) {
+                        if (!currentFilter || albumList[x].name.toLowerCase().indexOf(currentFilter.toLowerCase()) > -1) {
+                            albumListDiv.innerHTML += "<li class=\"rounded-corners\">"
+                                        + "<a href=\"" + albumList[x].uri + "\">"
+                                        + " <div class=\"albumContainer\">"
+                                        + "     <div class=\"albumImage\"><img src=\"" + albumList[x].image + "\"></div>"
+                                        + "     <div class=\"albumMetaContainer\">"
+                                        + "         <div class=\"albumName\">" + albumList[x].name + "</div>"
+                                        + "         <div class=\"albumArtist\">" + albumList[x].artist.name + "</div>"
+                                        + "         <div class=\"albumLength\" id=\"URI_" + albumList[x].uri + "\">" + "0 songs" + "</div>"
+                                        + "     </div>"
+                                        + " </div>"
+                                        + "</a>"
+                                        + "</li>";
+                                        
+                            models.Album.fromURI(albumList[x].uri, function(album) {
+                                var albumLength = document.getElementById('URI_' + album.uri);
+                                albumLength.innerText = album.length + " songs";
+                            });
+                        }
+					}
+			    }
+					
+	        	albumListDiv.innerHTML += "</ul>";
+        	}
+        
+        </script>
+    </head>
+    <body>
+        <div id="wrapper">
+        
+            <div id="artistContainer">
+                <div class="artistList rounded-corners" id="artistList"></div>
+            </div>
+            <div id="albumContainer">
+                <div class="albumOptions">
+                    <div class="no-checkedselector">
+                        <div class="toggle-container">
+                           <input id="toggle-grid" class="toggle toggle-left" name="toggle" type="radio" checked>
+                           <label for="toggle-grid" class="btn">Grid</label>
+                           <input id="toggle-list" class="toggle toggle-right" name="toggle" type="radio">
+                           <label for="toggle-list" class="btn">List</label>
+                        </div>
+                    </div>
+                    <label class="plainLabel">
+                        Sort by:
+                        <select id="sortDropDown">
+                          <option value="artist">Artist</option>
+                          <option value="album">Album</option>
+                          <option value="recent" selected>Recently Added</option>
+                        </select> 
+                    </label>
+                    <label class="plainLabel">
+                        Filter:
+                        <input id="filterTextBox" type="text"/>
+                    </label>
+                </div>
+                <div class="albumGrid" id="albumList"></div>
+            </div>
+	        	        
+        </div>
+    </body>
+</html>

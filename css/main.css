@@ -1,0 +1,164 @@
+/* Main Elements */
+html {-webkit-user-select: auto; height:100%; }
+body {height: 100%; box-sizing: border-box; margin: 0px; }
+#wrapper {position: relative; z-index: 2; height: 100%;}
+
+#artistContainer {
+    width: 200px;
+    float: left; /* add this */
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#artistList {
+    background-color:#DDDDDD;
+    margin: 10px 10px 0px 10px;
+    padding: 10px;
+}
+
+#albumContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+#albumList {
+    margin: 10px 0px 0px 0px;
+}
+
+/* ================================== */
+
+.albumOptions {
+    margin: 10px 0px 0px 20px;
+}
+
+.albumOptions .plainLabel
+{
+    display:inline;
+    margin-right:4px;
+}
+
+.albumOptions .no-checkedselector
+{
+    float: left;
+    padding-right: 10px;
+}
+
+input[type="radio"].toggle {
+    position: absolute;
+    left: -99em;
+}
+
+input[type="radio"].toggle + label {
+    display:inline-block;
+    text-align:center;
+    padding:3px 0px;
+    width:3.0em;
+}
+
+/*input[type="radio"].toggle:checked + label,*/ input[type="radio"].toggle.checked + label {
+    background-color:#404040;
+    color:#F7F7F7;
+}
+
+/* ================================== */
+
+.artistList ul {
+	list-style-type: none;
+    margin:0px;
+    padding:0px;
+}
+
+.artistList li {
+	list-style-type: none;
+    padding: 2px;
+}
+
+/* ================================== */
+
+.albumList ul {
+	list-style-type: none;
+    margin:0px;
+    padding:0px;
+}
+
+.albumList li {
+	list-style-type: none;
+    margin: 10px 10px 10px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color:#DDDDDD;
+}
+
+.albumList .albumContainer {
+    width: 100%;
+    white-space:nowrap;
+}
+
+.albumList .albumContainer div {
+    display:inline-block;
+    padding:0px 10px 0px 0px;
+    vertical-align: middle;
+}
+
+.albumList .albumContainer .albumImage {
+    padding:5px 0px 0px 0px;
+}
+
+.albumList .albumContainer .albumMetaContainer {
+    margin-left: 20px;
+    width: 100%;
+}
+
+.albumList .albumContainer .albumMetaContainer div {
+    width: 33%;
+}
+
+.albumList img {
+    width:50px;
+	height:50px;
+}
+
+.albumList li:hover {
+    background-color:#FDFDFD;
+}
+
+/* ================================== */
+
+.albumGrid ul{
+  list-style-type:none;
+  margin:0px;
+  padding:0px;
+}
+
+.albumGrid li {
+  display:inline-block;
+  vertical-align:middle;
+  width:150px;
+  background-color:#DDDDDD;
+  padding:13px;
+  margin: 0px 0px 20px 19px;
+  height: 212px;
+  min-height: 200px;
+  overflow:hidden;
+  text-align: center;
+}
+
+.albumGrid img {
+	width:150px;
+	height:150px;
+}
+
+.albumGrid li:hover {
+    background-color:#FDFDFD;
+}
+
+/* ================================== */
+
+.rounded-corners {
+     -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+}

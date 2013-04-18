@@ -1,0 +1,26 @@
+{
+	"AppDescription": {
+		"en": "A collection view of your music. Inspired by Rdio."
+	},
+	"AppIcon": {
+		"36x18": "icon.png"
+	},
+	"AppName": {
+		"en": "Collection View"
+	},
+	"BundleIdentifier": "collection-view",
+	"BundleType": "Application",
+	"BundleVersion": "0.1",
+	"DefaultTabs": [],
+	"Dependencies": {
+	  "api": "0.2.3",
+	  "util": "0.1.0",
+	  "resources": "0.2.2"
+    },
+	"RequiredInterface": 1,
+	"RequiredPermissions": [],
+	"SupportedLanguages": [
+		"en"
+	],
+	"VendorIdentifier": "co.mager"
+}
